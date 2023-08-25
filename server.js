@@ -21,7 +21,7 @@ app.listen(PORT, () => {
   db.sequelize
     .sync({ force: false })
     .then(() => {
-      console.log('connect DDBB success :D')
+      console.log('connect DDBB success')
     })
     .catch(console.log)
 })
