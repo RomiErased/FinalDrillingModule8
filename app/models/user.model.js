@@ -35,8 +35,20 @@ module.exports = (sequelize, DataTypes) => {
         msg: 'correo electronico actualmente registrado en la base de datos!'
       }
 
+    },
+    password: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: "La password es requerido"
+        },
+        len: {
+          args: [8,],
+          msg: "La password debe tener almenos 8 caracteres"
+        }
+      }
     }
-
   })
 
   return User

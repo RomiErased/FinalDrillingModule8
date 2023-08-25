@@ -5,8 +5,11 @@ const db = require('../models')
 const User = db.users
 const Bootcamp = db.bootcamps
 
+const bcrypt = require('bcryptjs')
+
+
 // Crear y Guardar Usuarios
-exports.createUser = (user) => {
+/* exports.createUser = (user) => {
   return User.create({
       firstName: user.firstName,
       lastName: user.lastName,
@@ -18,6 +21,31 @@ exports.createUser = (user) => {
     })
     .catch(err => {
       console.log(`>> Error al crear el usuario ${err}`)
+    })
+} */
+
+// Crear y Guardar Usuarios
+exports.createUser = (req, res) => {
+  if(!req.body.firstName || !req.body.lastName || !req.body.email || !req.body.password){
+    res.status(400).send({
+      message: "Todos los campos son requeridos!"
+    });
+    return;
+  }
+
+  const user = {
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    email: req.body.email,
+    password: bcrypt.hashSync(req.body.password)
+  }
+
+  return User.create(user)
+    .then(user => {
+      res.send(user)
+    })
+    .catch(err => {
+      return err;
     })
 }
 
@@ -68,8 +96,7 @@ exports.updateUserById = (userId, fName, lName) => {
       }
     })
     .then(user => {
-      console.log(`>> Se ha actualizado el usuario: ${JSON.stringify(user, null, 4)}`)
-      return user
+      return {"id": userId}
     })
     .catch(err => {
       console.log(`>> Error mientras se actualizaba el usuario: ${err}`)
@@ -84,7 +111,6 @@ exports.deleteUserById = (userId) => {
       }
     })
     .then(user => {
-      console.log(`>> Se ha eliminado el usuario: ${JSON.stringify(user, null, 4)}`)
       return user
     })
     .catch(err => {
